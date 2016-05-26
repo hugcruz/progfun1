@@ -28,6 +28,11 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("times of list") {
+    new TestTrees {
+      assert(times(List('a', 'b', 'a')) === List(('a', 2), ('b', 1)))
+    }
+  }
 
   test("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
@@ -44,10 +49,32 @@ class HuffmanSuite extends FunSuite {
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
+  test("createCodeTree") {
+    val chars = string2Chars("ababca")
+    val tree = Fork( Fork( Leaf('c',1), Leaf('b',2), List('c', 'b'),3), Leaf('a',3), List('c', 'b', 'a'), 6)
+    assert(createCodeTree(chars) === tree)
+  }
 
   test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
+    }
+  }
+
+  test("codeBits") {
+    val table = List( ('a',List(0,0)), ('b',List(0,1)), ('c',List(1,0)), ('d',List(1,1)) )
+    assert(codeBits(table)('c') === List(1,0))
+  }
+
+  test("convert") {
+    val tree = Fork( Fork( Leaf('c',1), Leaf('b',2), List('c', 'b'),3), Leaf('a',3), List('c', 'b', 'a'), 6)
+    val table = List( ('c',List(0,0)), ('b',List(0,1)), ('a',List(1)) )
+    assert(convert(tree) === table)
+  }
+
+  test("quickEncode") {
+    new TestTrees {
+      assert(decode(t1, quickEncode(t1)("ab".toList)) === "ab".toList)
     }
   }
 
